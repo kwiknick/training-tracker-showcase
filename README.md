@@ -8,9 +8,7 @@ Every morning, the system pulls the athlete's recent activity data from **Strava
 
 Read **[AI-DESIGN.md](./AI-DESIGN.md)** for the prompt-engineering and LLM-reliability approach in detail.
 
-Here's a fictional example of the daily briefing itself:
-
-<img src="./sample-email.png" alt="Sample daily training briefing email, showing today's workout, effort targets, fueling guidance, a 7-day audit table, fitness trend, and a workout protocol" width="600">
+Here's a fictional example of the daily briefing itself: **[sample-email.png](./sample-email.png)**.
 
 The raw markup lives in **[sample-email.html](./sample-email.html)** if you want to see it rendered live in a browser instead of as a static image.
 
