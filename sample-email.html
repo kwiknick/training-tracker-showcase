@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sample daily briefing</title>
+<style>
+  :root {
+    --ink: #1b2430;
+    --muted: #5b6673;
+    --line: #e4e8ee;
+    --bg: #f4f6f9;
+    --card: #ffffff;
+    --accent: #2563a8;
+    --accent-soft: #e8f0fa;
+    --green: #1f8a4c;
+    --green-soft: #e8f7ee;
+    --amber: #a9660b;
+    --amber-soft: #fbf1de;
+    --red: #b3311f;
+    --red-soft: #fcebe8;
+    --gray-soft: #eef0f3;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 32px 16px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.55;
+  }
+  .wrap {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  .banner {
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    background: var(--gray-soft);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 16px;
+    margin-bottom: 20px;
+  }
+  .email {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(20, 30, 45, 0.06);
+  }
+  .header {
+    padding: 28px 32px 24px;
+    background: linear-gradient(135deg, #1c3d5f, #2563a8);
+    color: #ffffff;
+  }
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 8px;
+  }
+  .header h1 {
+    margin: 0 0 4px;
+    font-size: 24px;
+  }
+  .header .date {
+    font-size: 14px;
+    opacity: 0.85;
+  }
+  .hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 32px;
+    background: var(--accent-soft);
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+  .hero-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .section {
+    padding: 24px 32px;
+    border-bottom: 1px solid var(--line);
+  }
+  .section:last-child {
+    border-bottom: none;
+  }
+  .section h2 {
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    margin: 0 0 14px;
+  }
+  .narrative p {
+    margin: 0;
+    font-size: 15px;
+  }
+  .zone-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .zone-box {
+    background: var(--gray-soft);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+  }
+  .zone-box .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .zone-box .value {
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .feel {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0 0 14px;
+  }
+  .cue {
+    background: var(--accent-soft);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+  .cue strong {
+    color: var(--accent);
+  }
+  table.audit {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  table.audit th {
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  table.audit td {
+    padding: 8px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  .status {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .status.done { background: var(--green-soft); color: var(--green); }
+  .status.miss { background: var(--red-soft); color: var(--red); }
+  .status.rest { background: var(--gray-soft); color: var(--muted); }
+  .status.warn { background: var(--amber-soft); color: var(--amber); }
+  .status.today { background: var(--accent-soft); color: var(--accent); }
+  .trend-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .trend-card {
+    background: var(--gray-soft);
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .trend-card.highlight {
+    background: var(--green-soft);
+  }
+  .trend-card .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .trend-card .value {
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .trend-card.highlight .value {
+    color: var(--green);
+  }
+  .trend-card .desc {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .trend-note {
+    font-size: 14px;
+    margin: 0;
+  }
+  .protocol-meta {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0 0 16px;
+  }
+  .protocol-list {
+    margin: 0 0 16px;
+    padding-left: 20px;
+  }
+  .protocol-list li {
+    margin-bottom: 12px;
+    font-size: 14px;
+  }
+  .protocol-list li strong {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+  .compare {
+    background: var(--gray-soft);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .footer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    padding: 20px 32px 0;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="banner">
+      Sample output from the daily briefing pipeline. Names, race, and numbers are fictional, generated to show the shape of a real email.
+    </div>
+    <div class="email">
+
+      <div class="header">
+        <div class="eyebrow">Daily Training Briefing</div>
+        <h1>Today's Workout</h1>
+        <div class="date">Thursday, July 23, 2026</div>
+      </div>
+
+      <div class="hero">
+        <div>
+          <div class="hero-label">Target Distance</div>
+          <div class="hero-value">9 miles</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="hero-label">Effort Zone</div>
+          <div class="hero-value" style="font-size:20px;">Z2 · Easy</div>
+        </div>
+      </div>
+
+      <div class="section narrative">
+        <p>You have missed three workouts in the last eight days and drifted hard on Tuesday's easy run. Today resets the pattern before intensity ramps up next week. Nine miles keeps you inside your aerobic base without adding to your current fatigue.</p>
+      </div>
+
+      <div class="section">
+        <h2>Effort target</h2>
+        <div class="zone-grid">
+          <div class="zone-box">
+            <div class="label">Target Pace</div>
+            <div class="value">10:15&ndash;10:45/mi</div>
+          </div>
+          <div class="zone-box">
+            <div class="label">Target HR</div>
+            <div class="value">145&ndash;155 bpm</div>
+          </div>
+          <div class="zone-box">
+            <div class="label">Feel</div>
+            <div class="value" style="font-size:13px; font-weight:600;">Conversational</div>
+          </div>
+        </div>
+        <p class="feel">Smooth, conversational, sustainable all day. If you feel the pull to push harder, dial it back. Easy days build the base that makes hard days work.</p>
+        <div class="cue">
+          <strong>Execution cue:</strong> Set a pace alarm at a 10:45/mi ceiling. Your zone discipline holds up when you focus on it (Saturday's long run was textbook), but Tuesday drifted 52% of the time into Z3+. Lock the ceiling in today. If the pace feels "comfortably hard," you are running too fast.
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Fueling guidance</h2>
+        <p style="margin:0 0 12px; font-size:14px;">For a 9-mile easy run, about 90 minutes: take 1 to 2 gels, or 45 to 60g of carbs, during the run. Start around mile 3, before you feel depleted. Early fueling speeds up recovery for tomorrow and improves the training adaptation.</p>
+        <p style="margin:0; font-size:14px;">If today runs as part of an easy double, fuel the first run light, 0 to 1 gel, rest 60 or more minutes between efforts, then fuel the second run normally. Total volume still lands in the aerobic base zone.</p>
+      </div>
+
+      <div class="section">
+        <h2>7-day audit</h2>
+        <table class="audit">
+          <thead>
+            <tr><th>Date</th><th>Planned</th><th>Status</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Jul 16 &middot; Thu</td><td>Easy</td>
+              <td><span class="status miss">Missed</span></td><td></td>
+            </tr>
+            <tr>
+              <td>Jul 17 &middot; Fri</td><td>Rest</td>
+              <td><span class="status rest">Rest</span></td><td></td>
+            </tr>
+            <tr>
+              <td>Jul 18 &middot; Sat</td><td>Long run</td>
+              <td><span class="status done">Completed</span></td>
+              <td>11.0 mi at 10:28/mi, HR 143</td>
+            </tr>
+            <tr>
+              <td>Jul 19 &middot; Sun</td><td>Easy</td>
+              <td><span class="status miss">Missed</span></td><td></td>
+            </tr>
+            <tr>
+              <td>Jul 20 &middot; Mon</td><td>Rest</td>
+              <td><span class="status rest">Rest</span></td><td></td>
+            </tr>
+            <tr>
+              <td>Jul 21 &middot; Tue</td><td>Easy</td>
+              <td><span class="status warn">Ran too hard</span></td>
+              <td>10.9 mi at 9:12/mi, HR 151, 52% of time in Z3+</td>
+            </tr>
+            <tr>
+              <td>Jul 22 &middot; Wed</td><td>Workout</td>
+              <td><span class="status miss">Missed</span></td><td></td>
+            </tr>
+            <tr>
+              <td>Jul 23 &middot; Thu</td><td>Easy</td>
+              <td><span class="status today">Today</span></td><td>Planned</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2>Fitness trend</h2>
+        <div class="trend-grid">
+          <div class="trend-card">
+            <div class="label">Fitness (CTL)</div>
+            <div class="value">18.6</div>
+            <div class="desc">42-day rolling load. Season high 27.9.</div>
+          </div>
+          <div class="trend-card">
+            <div class="label">Fatigue (ATL)</div>
+            <div class="value">0.1</div>
+            <div class="desc">7-day rolling load. Spikes after hard efforts.</div>
+          </div>
+          <div class="trend-card highlight">
+            <div class="label">Form (TSB)</div>
+            <div class="value">+18.6</div>
+            <div class="desc">Fitness minus fatigue. Well balanced.</div>
+          </div>
+        </div>
+        <p class="trend-note">Heart rate has held steady, within &plusmn;0.7 bpm, a sign of solid recovery and adaptation. Tuesday's easy run drifted into Z3+; dial back and hold the Z2 ceiling today. 64 days remain before the next race. Consistency matters more than any single hard effort.</p>
+      </div>
+
+      <div class="section">
+        <h2>Workout protocol: Speed Legs</h2>
+        <p class="protocol-meta">Supplemental strength routine, pulled from the plan's reference library for today's workout. Timing: after a run, ideally on a harder training day. Duration: 7 to 15 minutes. Frequency: twice a week, replacing the Mountain Legs routine on those days.</p>
+        <ol class="protocol-list">
+          <li>
+            <strong>Rear lunges &middot; 10 each leg</strong>
+            Step back, lower near the ground, keep the back straight. Targets the glutes, the muscle group most at risk during high-power output like fast uphills.
+          </li>
+          <li>
+            <strong>Single-leg Bulgarian split squat &middot; 10 each leg</strong>
+            Rear foot elevated, front foot forward. Lower under control. Key for glutes and the high hamstrings.
+          </li>
+          <li>
+            <strong>Single-leg deadlift &middot; 10 each leg</strong>
+            Slight knee bend on the working leg, hinge at the hip, reach toward the ground, keep the back straight. Expect soreness for the first 4 to 5 days. Start unweighted.
+          </li>
+          <li>
+            <strong>Goblet squat &middot; 10 to 20 reps</strong>
+            Hold the weight at chest height, squat to about 90 degrees, keep the back straight.
+          </li>
+          <li>
+            <strong>Single-leg step-up &middot; 20 to 50 reps each leg, unweighted</strong>
+            Quick, no bounce, full weight over the working leg. Close to the motion of climbing a hill.
+          </li>
+        </ol>
+        <div class="compare">
+          <strong style="color:var(--ink);">Why Speed Legs, not Mountain Legs, today:</strong> Mountain Legs builds climbing endurance and long-effort strength. Speed Legs targets the hamstrings, glutes, and hips that fail at high power output, the muscles Mountain Legs alone does not cover. The plan rotates both: Speed Legs twice a week, Mountain Legs once or twice a week.
+        </div>
+        <p style="margin:0; font-size:13px; color:var(--muted);">Progression: run every exercise unweighted first. Add a light dumbbell once form holds, then move to a kettlebell over time. Step-ups stay unweighted; body weight alone is enough stimulus.</p>
+      </div>
+
+    </div>
+    <div class="footer">
+      Generated automatically by the daily briefing pipeline. See <a href="./README.md" style="color:var(--accent);">README.md</a> for how this gets built.
+    </div>
+  </div>
+</body>
+</html>

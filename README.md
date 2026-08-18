@@ -6,7 +6,7 @@ A serverless AWS system turns raw fitness telemetry into a daily, personalized c
 
 Every morning, the system pulls the athlete's recent activity data from **Strava** and adds readiness data from a **Coros** watch. The system maps the date to the correct workout in a multi-race training plan, runs a fitness and fatigue analysis, and asks a Claude model to write a structured HTML briefing. The model works from the athlete's real data plus curated reference material. The briefing covers pace targets, fueling guidance, and a 7-day training audit. A React web app and a React Native mobile app give the athlete self-service control over the plan and integrations, without waiting for the next scheduled run.
 
-Read **[AI-DESIGN.md](./AI-DESIGN.md)** for the prompt-engineering and LLM-reliability approach in detail.
+Read **[AI-DESIGN.md](./AI-DESIGN.md)** for the prompt-engineering and LLM-reliability approach in detail. See **[sample-email.html](./sample-email.html)** for a fictional sample of the daily briefing itself (download it and open it in a browser to view the rendered version).
 
 ---
 
