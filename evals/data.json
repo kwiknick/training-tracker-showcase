@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-02T17:27:07+00:00",
+ "generated": "2026-11-02T17:45:29+00:00",
  "runs": [
   {
    "meta": {
@@ -68,6 +68,77 @@
     },
     "overall": {
      "score": 0.9557,
+     "critical_pass_rate": 1.0
+    }
+   }
+  },
+  {
+   "meta": {
+    "timestamp": "2026-11-02T17:45:24+00:00",
+    "git_sha": "3f7336e",
+    "commit_date": "",
+    "label": "",
+    "model": "claude-sonnet-5-5",
+    "judge_model": "claude-sonnet-5-5",
+    "samples": 3,
+    "judge_samples": 1,
+    "cost_usd": 1.2784,
+    "calls": 80,
+    "budget_exceeded": false,
+    "jobs_planned": 60
+   },
+   "summary": {
+    "briefing": {
+     "score": 0.9748,
+     "critical_pass_rate": 1.0,
+     "n": 33,
+     "errors": 0,
+     "graders": {
+      "adjustment_note_verbatim": 1.0,
+      "audit_table_verbatim": 1.0,
+      "committed_distance": 0.8167,
+      "day_names_correct": 1.0,
+      "fitness_snapshot_verbatim": 1.0,
+      "hike_alternative": 1.0,
+      "judge:fueling_specific": 0.95,
+      "judge:grounded_in_data": 0.5,
+      "judge:tone_follows_directive": 0.9091,
+      "judge:training_cost_explained": 0.75,
+      "no_acronyms": 1.0,
+      "no_invented_rest": 1.0,
+      "no_name_leak": 1.0,
+      "no_text_outside_html": 1.0,
+      "required_sections": 1.0
+     }
+    },
+    "observation": {
+     "score": 0.975,
+     "critical_pass_rate": 1.0,
+     "n": 15,
+     "errors": 0,
+     "graders": {
+      "judge:grounded_in_data": 0.9,
+      "max_25_words": 0.896,
+      "no_acronyms": 1.0,
+      "no_name_leak": 1.0,
+      "one_sentence": 1.0
+     }
+    },
+    "snapshot": {
+     "score": 0.9444,
+     "critical_pass_rate": 1.0,
+     "n": 12,
+     "errors": 0,
+     "graders": {
+      "judge:grounded_in_data": 0.6875,
+      "judge:specific_recommendation": 0.9375,
+      "no_acronyms": 1.0,
+      "no_name_leak": 1.0,
+      "three_to_five_sentences": 0.8333
+     }
+    },
+    "overall": {
+     "score": 0.9647,
      "critical_pass_rate": 1.0
     }
    }
