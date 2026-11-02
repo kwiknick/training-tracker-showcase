@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coach Eval Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  color-scheme: light;
+  --surface-0: #f4f3f0; --surface-1: #fcfcfb;
+  --text-primary: #0b0b0b; --text-secondary: #52514e; --muted: #898781;
+  --grid: #e1e0d9; --border: rgba(11,11,11,0.10);
+  --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a;
+  --good: #006300; --critical: #d03b3b;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --surface-0: #111110; --surface-1: #1a1a19;
+    --text-primary: #f0efec; --text-secondary: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --border: rgba(255,255,255,0.10);
+    --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70;
+    --good: #0ca30c; --critical: #d03b3b;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --surface-0: #111110; --surface-1: #1a1a19;
+  --text-primary: #f0efec; --text-secondary: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --border: rgba(255,255,255,0.10);
+  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70;
+  --good: #0ca30c; --critical: #d03b3b;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--surface-0); color: var(--text-primary);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width: 1080px; margin: 0 auto; padding: 32px 16px 64px; }
+h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: -0.01em; }
+h2 { font-size: 17px; margin: 0 0 12px; }
+.lede { color: var(--text-secondary); margin: 0 0 24px; max-width: 70ch; }
+.card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px;
+  padding: 20px; margin-bottom: 20px; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.tile { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+.tile .label { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-secondary); }
+.tile .value { font-size: 30px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.tile .sub { font-size: 13px; color: var(--muted); }
+.ok { color: var(--good); } .bad { color: var(--critical); }
+.chart-wrap { position: relative; height: 320px; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; }
+.swatch { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.swatch.hollow { background: transparent !important; border: 2px solid var(--muted); }
+table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--grid); }
+th { color: var(--text-secondary); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+.scroll { overflow-x: auto; }
+.bar { height: 8px; border-radius: 4px; background: var(--grid); min-width: 80px; }
+.bar > span { display: block; height: 100%; border-radius: 4px; }
+.tag { font-size: 11px; padding: 1px 6px; border-radius: 4px; border: 1px solid var(--border); color: var(--text-secondary); }
+code { font-size: 13px; }
+.grid2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
+.grid2 > *, .card, .tile { min-width: 0; }
+@media (max-width: 760px) { .grid2 { grid-template-columns: minmax(0, 1fr); } }
+ul.method { padding-left: 18px; margin: 0; } ul.method li { margin: 4px 0; color: var(--text-secondary); }
+ul.method code { color: var(--text-primary); }
+footer { color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Coach Eval Dashboard</h1>
+  <p class="lede">Continuous evaluation of the LLM prompts behind a daily ultra-training coaching email.
+    Every prompt change runs through frozen scenarios in CI: deterministic graders (each one born from a
+    real production bug) plus a rubric-based LLM judge. Critical graders block deploy.</p>
+
+  <div class="tiles" id="tiles"></div>
+
+  <section class="card">
+    <h2>Score over time</h2>
+    <div class="legend" id="legend"></div>
+    <div class="chart-wrap"><canvas id="trend" aria-label="Eval score over time per prompt" role="img"></canvas></div>
+  </section>
+
+  <div class="grid2">
+    <section class="card">
+      <h2>Latest run, per grader</h2>
+      <div class="scroll"><table id="graders"><thead><tr><th>Prompt</th><th>Grader</th><th>Score</th><th></th></tr></thead><tbody></tbody></table></div>
+    </section>
+    <section class="card">
+      <h2>How it's scored</h2>
+      <ul class="method" id="method"></ul>
+      <div id="calibration"></div>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>Run history</h2>
+    <div class="scroll"><table id="runs"><thead><tr>
+      <th>Code date</th><th>Commit</th><th>Kind</th><th>Model</th><th>Briefing</th><th>Observation</th><th>Snapshot</th><th>Critical pass</th><th>Cost</th>
+    </tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <footer id="footer"></footer>
+</main>
+<script>
+const PROMPTS = ["briefing", "observation", "snapshot"];
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const el = (tag, text, cls) => { const e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
+const pct = v => v == null ? "n/a" : `${Math.round(v * 100)}%`;
+const fmt = v => v == null ? "n/a" : v.toFixed(2);
+const codeDate = r => (r.meta.commit_date || r.meta.timestamp).slice(0, 10);
+const isRetro = r => r.meta.label === "retroactive";
+
+fetch("data.json").then(r => r.json()).then(render).catch(e => {
+  document.getElementById("footer").textContent = "Could not load data.json: " + e;
+});
+
+function render(data) {
+  const runs = data.runs.slice().sort((a, b) => codeDate(a).localeCompare(codeDate(b)));
+  const latest = runs.filter(r => !isRetro(r)).at(-1) || runs.at(-1);
+  tiles(runs, latest);
+  trend(runs);
+  graderTable(latest);
+  method(data.graders || [], data.calibration);
+  runTable(runs);
+  document.getElementById("footer").textContent =
+    `Retroactive runs replay today's eval suite against historical prompt code (labeled, evaluated ${data.generated.slice(0, 10)} or later). ` +
+    `Generated ${data.generated}.`;
+}
+
+function tiles(runs, latest) {
+  const s = latest.summary.overall, m = latest.meta;
+  const live = runs.filter(r => !isRetro(r));
+  const cost = live.length ? live.reduce((a, r) => a + r.meta.cost_usd, 0) / live.length : m.cost_usd;
+  const box = document.getElementById("tiles");
+  const add = (label, value, sub, cls) => {
+    const t = el("div", null, "tile");
+    t.append(el("div", label, "label"), el("div", value, "value " + (cls || "")), el("div", sub, "sub"));
+    box.append(t);
+  };
+  add("Overall score", fmt(s.score), `latest run · ${m.git_sha}`);
+  add("Critical pass", pct(s.critical_pass_rate), s.critical_pass_rate === 1 ? "✓ all critical graders" : "✗ failures present",
+      s.critical_pass_rate === 1 ? "ok" : "bad");
+  add("Cost per run", `$${cost.toFixed(2)}`, `${m.model.replace(/^us\.anthropic\./, "")}`);
+  add("Runs tracked", String(runs.length), `${runs.filter(isRetro).length} retroactive · ${live.length} live`);
+}
+
+function trend(runs) {
+  const colors = PROMPTS.map((_, i) => css(`--series-${i + 1}`));
+  const legend = document.getElementById("legend");
+  PROMPTS.forEach((p, i) => {
+    const s = el("span"); const sw = el("span", null, "swatch"); sw.style.background = colors[i];
+    s.append(sw, document.createTextNode(p)); legend.append(s);
+  });
+  const h = el("span"); const hw = el("span", null, "swatch hollow"); h.append(hw, document.createTextNode("hollow = retroactive"));
+  legend.append(h);
+
+  const labels = runs.map(r => `${codeDate(r)} ${r.meta.git_sha}`);
+  const datasets = PROMPTS.map((p, i) => ({
+    label: p,
+    data: runs.map(r => r.summary[p] ? r.summary[p].score : null),
+    borderColor: colors[i], backgroundColor: runs.map(r => isRetro(r) ? css("--surface-1") : colors[i]),
+    pointBorderColor: colors[i], borderWidth: 2, pointRadius: 4, pointHoverRadius: 6, pointBorderWidth: 2,
+    spanGaps: true, tension: 0,
+  }));
+  new Chart(document.getElementById("trend"), {
+    type: "line",
+    data: { labels, datasets },
+    options: {
+      maintainAspectRatio: false, animation: false,
+      interaction: { mode: "index", intersect: false },
+      layout: { padding: { right: 84 } },
+      scales: {
+        y: { min: 0, max: 1, grid: { color: css("--grid") }, border: { display: false },
+             ticks: { color: css("--muted"), stepSize: 0.25, callback: v => v.toFixed(2) } },
+        x: { grid: { display: false }, ticks: { color: css("--muted"), maxRotation: 0, autoSkip: true, maxTicksLimit: 8,
+             callback: (v, i) => labels[i].split(" ")[0] } },
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: {
+          title: items => { const r = runs[items[0].dataIndex]; return `${labels[items[0].dataIndex]}${isRetro(r) ? " (retroactive)" : ""}`; },
+          label: c => ` ${c.dataset.label}: ${c.parsed.y == null ? "n/a" : c.parsed.y.toFixed(2)}`,
+        } },
+      },
+    },
+    plugins: [{ id: "endLabels", afterDatasetsDraw(chart) {
+      const ctx = chart.ctx; ctx.save(); ctx.font = "12px system-ui"; ctx.fillStyle = css("--text-secondary");
+      // Stack end labels top-down with a minimum gap so converging series don't overprint.
+      const ends = chart.data.datasets.map((d, i) => {
+        const last = chart.getDatasetMeta(i).data.findLast((pt, j) => d.data[j] != null);
+        return last && { label: d.label, x: last.x, y: last.y };
+      }).filter(Boolean).sort((a, b) => a.y - b.y);
+      ends.forEach((e, k) => { if (k && e.y - ends[k - 1].y < 14) e.y = ends[k - 1].y + 14; ctx.fillText(e.label, e.x + 8, e.y + 4); });
+      ctx.restore();
+    } }],
+  });
+}
+
+function graderTable(run) {
+  const tb = document.querySelector("#graders tbody");
+  PROMPTS.forEach((p, i) => {
+    const g = run.summary[p] && run.summary[p].graders; if (!g) return;
+    Object.entries(g).forEach(([name, score]) => {
+      const tr = el("tr");
+      const bar = el("div", null, "bar"); const fill = el("span");
+      fill.style.width = `${Math.max(score * 100, 2)}%`; fill.style.background = css(`--series-${i + 1}`); bar.append(fill);
+      const td = el("td"); td.append(bar);
+      const nameTd = el("td"); nameTd.append(el("code", name));
+      tr.append(el("td", p), nameTd, el("td", fmt(score)), td);
+      tb.append(tr);
+    });
+  });
+}
+
+function method(graders, calibration) {
+  const ul = document.getElementById("method");
+  graders.forEach(g => {
+    const li = el("li"); li.append(el("code", g.name), document.createTextNode(` ${g.critical ? "(critical) " : ""}${g.why}`));
+    ul.append(li);
+  });
+  if (calibration) {
+    const p = el("p");
+    p.textContent = `Judge calibration: ${pct(calibration.agreement)} agreement with human labels ` +
+      `(Cohen's kappa ${fmt(calibration.kappa)}) across ${calibration.n} judgments, labeled by ${calibration.labeler}.`;
+    document.getElementById("calibration").append(p);
+  }
+}
+
+function runTable(runs) {
+  const tb = document.querySelector("#runs tbody");
+  runs.slice().reverse().forEach(r => {
+    const tr = el("tr"); const kind = el("td"); kind.append(el("span", isRetro(r) ? "retroactive" : "live", "tag"));
+    const crit = r.summary.overall.critical_pass_rate;
+    tr.append(el("td", codeDate(r)), el("td", r.meta.git_sha), kind, el("td", r.meta.model.replace(/^us\.anthropic\./, "")),
+      ...PROMPTS.map(p => el("td", r.summary[p] ? fmt(r.summary[p].score) : "n/a")),
+      el("td", `${crit === 1 ? "✓" : "✗"} ${pct(crit)}`, crit === 1 ? "ok" : "bad"),
+      el("td", `$${r.meta.cost_usd.toFixed(2)}`));
+    tb.append(tr);
+  });
+}
+</script>
+</body>
+</html>

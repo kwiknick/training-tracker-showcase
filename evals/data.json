@@ -1,0 +1,139 @@
+{
+ "generated": "2026-11-02T17:27:07+00:00",
+ "runs": [
+  {
+   "meta": {
+    "timestamp": "2026-11-02T17:27:02+00:00",
+    "git_sha": "1a96a6e",
+    "commit_date": "",
+    "label": "",
+    "model": "claude-sonnet-5-5",
+    "judge_model": "claude-sonnet-5-5",
+    "samples": 3,
+    "judge_samples": 1,
+    "cost_usd": 1.2743,
+    "calls": 80,
+    "budget_exceeded": false,
+    "jobs_planned": 60
+   },
+   "summary": {
+    "briefing": {
+     "score": 0.9741,
+     "critical_pass_rate": 1.0,
+     "n": 33,
+     "errors": 0,
+     "graders": {
+      "adjustment_note_verbatim": 1.0,
+      "audit_table_verbatim": 1.0,
+      "committed_distance": 0.7833,
+      "day_names_correct": 1.0,
+      "fitness_snapshot_verbatim": 1.0,
+      "hike_alternative": 1.0,
+      "judge:fueling_specific": 0.975,
+      "judge:grounded_in_data": 0.5,
+      "judge:tone_follows_directive": 0.9318,
+      "judge:training_cost_explained": 0.75,
+      "no_acronyms": 1.0,
+      "no_invented_rest": 1.0,
+      "no_name_leak": 1.0,
+      "no_text_outside_html": 1.0,
+      "required_sections": 1.0
+     }
+    },
+    "observation": {
+     "score": 0.9764,
+     "critical_pass_rate": 1.0,
+     "n": 15,
+     "errors": 0,
+     "graders": {
+      "judge:grounded_in_data": 0.9,
+      "max_25_words": 0.904,
+      "no_acronyms": 1.0,
+      "no_name_leak": 1.0,
+      "one_sentence": 1.0
+     }
+    },
+    "snapshot": {
+     "score": 0.9167,
+     "critical_pass_rate": 1.0,
+     "n": 12,
+     "errors": 0,
+     "graders": {
+      "judge:grounded_in_data": 0.75,
+      "judge:specific_recommendation": 0.875,
+      "no_acronyms": 1.0,
+      "no_name_leak": 1.0,
+      "three_to_five_sentences": 0.75
+     }
+    },
+    "overall": {
+     "score": 0.9557,
+     "critical_pass_rate": 1.0
+    }
+   }
+  }
+ ],
+ "graders": [
+  {
+   "name": "no_name_leak",
+   "critical": true,
+   "why": "no invented sign-off naming anyone; a friend's name from a note once leaked into the footer (96315a8)"
+  },
+  {
+   "name": "audit_table_verbatim",
+   "critical": true,
+   "why": "pre-rendered 7-day audit embedded byte-for-byte; the model used to hallucinate rows (da6cf6d)"
+  },
+  {
+   "name": "fitness_snapshot_verbatim",
+   "critical": true,
+   "why": "fitness numbers embedded unchanged, killing day-to-day tone whiplash (0f92f0d)"
+  },
+  {
+   "name": "adjustment_note_verbatim",
+   "critical": true,
+   "why": "plan-change reason embedded as written, not re-justified by the model (31126b5)"
+  },
+  {
+   "name": "no_text_outside_html",
+   "critical": true,
+   "why": "no preamble or leaked reasoning around the email markup (4f34eed)"
+  },
+  {
+   "name": "no_invented_rest",
+   "critical": true,
+   "why": "rest/skip is decided in code; the model may not turn a training day into rest (c132887)"
+  },
+  {
+   "name": "committed_distance",
+   "critical": false,
+   "why": "commits to one distance inside the plan range instead of hedging (b7b45e4)"
+  },
+  {
+   "name": "no_acronyms",
+   "critical": false,
+   "why": "plain language: 'fitness' not 'CTL', outside the verbatim blocks"
+  },
+  {
+   "name": "day_names_correct",
+   "critical": false,
+   "why": "weekday names match their dates (59d6285, 16d760a)"
+  },
+  {
+   "name": "required_sections",
+   "critical": false,
+   "why": "all four email sections present"
+  },
+  {
+   "name": "hike_alternative",
+   "critical": false,
+   "why": "hike days name one fallback run distance (b4f84aa)"
+  },
+  {
+   "name": "judge:*",
+   "critical": false,
+   "why": "Sonnet judge, 1-5 rubric: tone follows the computed directive, training cost explained, fueling specificity, nothing fabricated, actionable weekly recommendation"
+  }
+ ],
+ "calibration": null
+}
