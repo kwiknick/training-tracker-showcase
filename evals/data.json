@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-22T19:04:53+00:00",
+ "generated": "2026-11-22T19:18:00+00:00",
  "runs": [
   {
    "meta": {
@@ -369,6 +369,94 @@
     },
     "overall": {
      "score": 0.9604,
+     "critical_pass_rate": 1.0
+    }
+   }
+  },
+  {
+   "meta": {
+    "timestamp": "2026-11-22T19:17:56+00:00",
+    "git_sha": "e2cb0e2",
+    "commit_date": "",
+    "label": "",
+    "model": "claude-sonnet-5-5",
+    "judge_model": "claude-sonnet-5-5",
+    "samples": 3,
+    "judge_samples": 1,
+    "cost_usd": 1.3752,
+    "calls": 92,
+    "budget_exceeded": false,
+    "jobs_planned": 69
+   },
+   "summary": {
+    "briefing": {
+     "score": 0.9733,
+     "critical_pass_rate": 1.0,
+     "n": 33,
+     "errors": 0,
+     "graders": {
+      "adjustment_note_verbatim": 1.0,
+      "audit_table_verbatim": 1.0,
+      "committed_distance": 0.8,
+      "day_names_correct": 1.0,
+      "fitness_snapshot_verbatim": 1.0,
+      "hike_alternative": 1.0,
+      "judge:fueling_specific": 0.975,
+      "judge:grounded_in_data": 0.4318,
+      "judge:tone_follows_directive": 0.9091,
+      "judge:training_cost_explained": 0.75,
+      "no_acronyms": 1.0,
+      "no_invented_rest": 1.0,
+      "no_name_leak": 1.0,
+      "no_text_outside_html": 1.0,
+      "required_sections": 1.0
+     }
+    },
+    "observation": {
+     "score": 0.9767,
+     "critical_pass_rate": 1.0,
+     "n": 15,
+     "errors": 0,
+     "graders": {
+      "judge:grounded_in_data": 0.85,
+      "max_25_words": 0.9227,
+      "no_acronyms": 1.0,
+      "no_name_leak": 1.0,
+      "one_sentence": 1.0
+     }
+    },
+    "snapshot": {
+     "score": 0.8889,
+     "critical_pass_rate": 1.0,
+     "n": 12,
+     "errors": 0,
+     "graders": {
+      "judge:grounded_in_data": 0.625,
+      "judge:specific_recommendation": 0.875,
+      "no_acronyms": 1.0,
+      "no_name_leak": 1.0,
+      "three_to_five_sentences": 0.5833
+     }
+    },
+    "week_ahead": {
+     "score": 0.9861,
+     "critical_pass_rate": 1.0,
+     "n": 9,
+     "errors": 0,
+     "graders": {
+      "day_table_verbatim": 1.0,
+      "judge:grounded_in_data": 0.5833,
+      "judge:specific_recommendation": 0.8333,
+      "no_acronyms": 1.0,
+      "no_invented_mileage": 1.0,
+      "no_name_leak": 1.0,
+      "no_text_outside_html": 1.0,
+      "totals_table_verbatim": 1.0,
+      "week_ahead_sections": 1.0
+     }
+    },
+    "overall": {
+     "score": 0.9563,
      "critical_pass_rate": 1.0
     }
    }
